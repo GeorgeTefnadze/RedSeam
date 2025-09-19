@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import LoginPage from "./pages/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage";
+import ProductsPage from "./pages/ProductsPage";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -11,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegistrationPage />} />
-        {/* You can add a default route later, e.g., to redirect to login */}
+        <Route path="/products" element={<ProductsPage />} />
         <Route path="/" element={<LoginPage />} />
       </Routes>
     </BrowserRouter>

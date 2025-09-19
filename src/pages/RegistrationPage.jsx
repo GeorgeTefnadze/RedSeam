@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import apiClient from "../api/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
 import Header from "../components/Header";
 import Input from "../components/Input";
@@ -7,17 +10,21 @@ import Button from "../components/Button";
 import defaultAvatar from "../assets/HeaderAvatar.svg";
 
 const RegistrationPage = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    password_confirmation: "",
   });
   const [avatarPreview, setAvatarPreview] = useState(defaultAvatar);
   const [avatarFile, setAvatarFile] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
+
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
@@ -26,10 +33,10 @@ const RegistrationPage = () => {
 
   const handleAvatarUpload = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file));
-    }
+    if (!file) return;
+
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
   };
 
   const removeAvatar = () => {
@@ -39,6 +46,36 @@ const RegistrationPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const fd = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      fd.append(key, value);
+    });
+
+    if (avatarFile) {
+      fd.append("avatar", avatarFile);
+    }
+
+    apiClient
+      .post(`/register`, fd, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+
+        const { token, user } = response.data;
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        navigate("/products");
+      })
+      .catch((err) => {
+        console.error("Register failed:", err);
+        setError("Invalid email or password. Please try again.");
+      });
 
     console.log("Form submitted with:", { ...formData, avatar: avatarFile });
   };
@@ -104,19 +141,20 @@ const RegistrationPage = () => {
               hasIcon={true}
             />
             <Input
-              id="confirmPassword"
+              id="password_confirmation"
+              name="password_confirmation"
               label="Confirm password *"
               type="password"
-              value={formData.confirmPassword}
+              value={formData.password_confirmation}
               onChange={handleChange}
               hasIcon={true}
             />
             <Button type="submit" variant="primary">
               Register
             </Button>
-            <p className="auth-form__footer">
-              Already member? <a href="/login">Log in</a>
-            </p>
+            <Link to={"/"} className="auth-form__footer">
+              Already member? <span>Log in</span>
+            </Link>
           </form>
         </div>
       </main>
