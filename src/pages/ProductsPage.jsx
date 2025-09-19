@@ -5,19 +5,34 @@ import Header from "../components/Header";
 import ProductCard from "../components/ProductCard";
 import FilterDropdown from "../components/FilterDropdown";
 import SortDropdown from "../components/SortDropdown";
+import Pagination from "../components/Pagination";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
+  const [pagination, setPagination] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
 
-  useEffect(() => {
-    apiClient.get("/products").then((response) => {
-      console.log(response.data);
+  const fetchProducts = (url = "/products") => {
+    apiClient
+      .get(url)
+      .then((response) => {
+        console.log(response.data);
+        setProducts(response.data.data);
+        setPagination(response.data.meta);
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+      });
+  };
 
-      setProducts(response.data.data);
-    });
+  useEffect(() => {
+    fetchProducts();
   }, []);
+
+  const handlePageChange = (url) => {
+    fetchProducts(url);
+  };
 
   const handleApplyFilter = (priceRange) => {
     console.log("Applying price filter:", priceRange);
@@ -37,7 +52,8 @@ const ProductsPage = () => {
           <h1 className="products-page__title">Products</h1>
           <div className="products-page__meta-controls">
             <span className="products-page__count">
-              Showing 1-10 of 100 results
+              {pagination &&
+                `Showing ${pagination.from}-${pagination.to} of ${pagination.total} results`}
             </span>
             <div className="products-page__controls">
               <div
@@ -94,6 +110,11 @@ const ProductsPage = () => {
             <ProductCard key={product.id} product={product} />
           ))}
         </main>
+
+        <Pagination
+          paginationData={pagination}
+          onPageChange={handlePageChange}
+        />
       </div>
     </>
   );
