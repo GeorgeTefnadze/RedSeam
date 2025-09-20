@@ -9,7 +9,6 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 
 const LoginPage = () => {
-  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -38,7 +37,7 @@ const LoginPage = () => {
     setError(null);
 
     apiClient
-      .post(`${API_URL}/login`, formData)
+      .post(`/login`, formData)
       .then((response) => {
         console.log(response.data);
 
@@ -81,7 +80,7 @@ const LoginPage = () => {
             <Button type="submit" variant="primary">
               Log in
             </Button>
-            <Link to={"register"} className="auth-form__footer">
+            <Link to={"/register"} className="auth-form__footer">
               Not a member? <span>Register</span>
             </Link>
           </form>

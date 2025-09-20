@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import apiClient from "../api/axiosConfig";
 
 import Header from "../components/Header";
@@ -8,31 +9,27 @@ import SortDropdown from "../components/SortDropdown";
 import Pagination from "../components/Pagination";
 
 const ProductsPage = () => {
+  const { pageNumber } = useParams();
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
-  const [pagination, setPagination] = useState(null);
+  const [paginationData, setPaginationData] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
 
-  const fetchProducts = (url = "/products") => {
-    apiClient
-      .get(url)
-      .then((response) => {
-        console.log(response.data);
-        setProducts(response.data.data);
-        setPagination(response.data.meta);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-      });
-  };
+  const currentPage = parseInt(pageNumber, 10) || 1;
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const handlePageChange = (url) => {
-    fetchProducts(url);
-  };
+    apiClient
+      .get(`/products?page=${currentPage}`)
+      .then((response) => {
+        setProducts(response.data.data);
+        setPaginationData(response.data.meta);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch products:", error);
+      });
+  }, [currentPage]);
 
   const handleApplyFilter = (priceRange) => {
     console.log("Applying price filter:", priceRange);
@@ -44,6 +41,19 @@ const ProductsPage = () => {
     setIsSortOpen(false);
   };
 
+  const handlePageChange = (url) => {
+    if (!url) return;
+    try {
+      const urlObject = new URL(url);
+      const page = urlObject.searchParams.get("page");
+      if (page) {
+        navigate(`/products/page/${page}`);
+      }
+    } catch (error) {
+      console.error("Invalid URL for pagination:", url);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -52,8 +62,8 @@ const ProductsPage = () => {
           <h1 className="products-page__title">Products</h1>
           <div className="products-page__meta-controls">
             <span className="products-page__count">
-              {pagination &&
-                `Showing ${pagination.from}-${pagination.to} of ${pagination.total} results`}
+              {paginationData &&
+                `Showing ${paginationData.from}-${paginationData.to} of ${paginationData.total} results`}
             </span>
             <div className="products-page__controls">
               <div
@@ -110,9 +120,8 @@ const ProductsPage = () => {
             <ProductCard key={product.id} product={product} />
           ))}
         </main>
-
         <Pagination
-          paginationData={pagination}
+          paginationData={paginationData}
           onPageChange={handlePageChange}
         />
       </div>

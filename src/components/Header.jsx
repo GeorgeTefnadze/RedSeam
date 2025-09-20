@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import HeaderLogo from "../assets/HeaderLogo.svg";
 import HeaderAvatar from "../assets/HeaderAvatar.svg";
@@ -14,36 +12,45 @@ const Header = () => {
   const [user, setUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  // The logoLinkPath state and its corresponding useEffect have been removed for a more direct approach.
+
   useEffect(() => {
+    // This effect checks for user changes on navigation
     if (localStorage.getItem("user") !== null) {
       setUser(JSON.parse(localStorage.getItem("user")));
+    } else {
+      setUser(null);
     }
   }, [location]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-
     setUser(null);
     setIsDropdownOpen(false);
     navigate("/login");
   };
 
+  // Determine the correct path for the logo link directly from the current location.
+  const logoLinkPath = location.pathname.startsWith("/products/page/")
+    ? location.pathname
+    : "/products";
+
   return (
     <header className="header">
-      <div className="header__logo">
+      <Link to={logoLinkPath} className="header__logo">
         <img src={HeaderLogo} alt="header logo" />
-      </div>
+      </Link>
       <nav className="header__nav">
         {user === null ? (
-          <Link to={"/"} className="header__nav-link">
+          <Link to={"/login"} className="header__nav-link">
             <img src={HeaderAvatar} alt="header avatar icon" />
             <span>Log in</span>
           </Link>
         ) : (
           <div className="header__nav-controls">
             <Link to="/cart" className="header__nav-cart">
-              <img src={CartIcon} alt="" />
+              <img src={CartIcon} alt="Cart" />
             </Link>
 
             <div

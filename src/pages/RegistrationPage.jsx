@@ -56,6 +56,8 @@ const RegistrationPage = () => {
       fd.append("avatar", avatarFile);
     }
 
+    console.log([...fd.entries()]);
+
     apiClient
       .post(`/register`, fd, {
         headers: {
