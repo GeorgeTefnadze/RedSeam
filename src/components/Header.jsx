@@ -12,10 +12,7 @@ const Header = () => {
   const [user, setUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // The logoLinkPath state and its corresponding useEffect have been removed for a more direct approach.
-
   useEffect(() => {
-    // This effect checks for user changes on navigation
     if (localStorage.getItem("user") !== null) {
       setUser(JSON.parse(localStorage.getItem("user")));
     } else {
@@ -31,14 +28,9 @@ const Header = () => {
     navigate("/login");
   };
 
-  // Determine the correct path for the logo link directly from the current location.
-  const logoLinkPath = location.pathname.startsWith("/products/page/")
-    ? location.pathname
-    : "/products";
-
   return (
     <header className="header">
-      <Link to={logoLinkPath} className="header__logo">
+      <Link to={"/products"} className="header__logo">
         <img src={HeaderLogo} alt="header logo" />
       </Link>
       <nav className="header__nav">

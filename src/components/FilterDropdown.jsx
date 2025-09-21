@@ -1,38 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Input from "./Input";
 import Button from "./Button";
 
-const FilterDropdown = ({ onApply }) => {
-  const [priceRange, setPriceRange] = useState({ from: "", to: "" });
+const FilterDropdown = ({ initialValues, onApply }) => {
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setPriceRange((prev) => ({ ...prev, [name]: value }));
-  };
+  useEffect(() => {
+    setMinPrice(initialValues.minPrice || "");
+    setMaxPrice(initialValues.maxPrice || "");
+  }, [initialValues]);
 
-  const handleApply = () => {
-    onApply(priceRange);
+  const handleApply = (e) => {
+    e.stopPropagation();
+    onApply({ minPrice, maxPrice });
   };
 
   return (
-    <div className="dropdown filter-dropdown">
+    <div
+      className="dropdown filter-dropdown"
+      onClick={(e) => e.stopPropagation()}
+    >
       <h3 className="filter-dropdown__title">Select price</h3>
       <div className="filter-dropdown__inputs">
         <Input
-          id="from"
-          name="from"
-          label="From *"
           type="number"
-          value={priceRange.from}
-          onChange={handleChange}
+          id="minPrice"
+          className="form-group__input"
+          placeholder="From"
+          value={minPrice}
+          onChange={(e) => setMinPrice(e.target.value)}
         />
         <Input
-          id="to"
-          name="to"
-          label="To *"
           type="number"
-          value={priceRange.to}
-          onChange={handleChange}
+          id="maxPrice"
+          className="form-group__input"
+          placeholder="To"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value)}
         />
       </div>
       <Button

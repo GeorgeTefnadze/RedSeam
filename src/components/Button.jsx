@@ -1,9 +1,14 @@
 import React from "react";
 
-const Button = ({ children, type = "submit", variant = "primary" }) => {
+const Button = ({
+  children,
+  type = "button",
+  variant = "primary",
+  onClick,
+}) => {
   const className = `button button--${variant}`;
   return (
-    <button type={type} className={className}>
+    <button type={type} className={className} onClick={onClick}>
       {children}
     </button>
   );

@@ -45,10 +45,24 @@ const ProductDetailPage = () => {
     apiClient
       .get(`/products/${productId}`)
       .then((response) => {
-        setProduct(response.data);
-        setSelectedImage(response.data.cover_image);
-        setSelectedColor(response.data.available_colors[0]);
-        setSelectedSize(response.data.available_sizes[0]);
+        const productData = response.data;
+        setProduct(productData);
+        setSelectedImage(productData.cover_image);
+
+        if (
+          productData.available_colors &&
+          productData.available_colors.length > 0
+        ) {
+          setSelectedColor(productData.available_colors[0]);
+        }
+
+        if (
+          productData.available_sizes &&
+          productData.available_sizes.length > 0
+        ) {
+          setSelectedSize(productData.available_sizes[0]);
+        }
+
         setLoading(false);
       })
       .catch((err) => {
@@ -69,7 +83,11 @@ const ProductDetailPage = () => {
   const handleImageSelect = (image) => {
     setSelectedImage(image);
     const imageIndex = product.images.findIndex((img) => img === image);
-    if (imageIndex !== -1 && product.available_colors[imageIndex]) {
+    if (
+      imageIndex !== -1 &&
+      product.available_colors &&
+      product.available_colors[imageIndex]
+    ) {
       setSelectedColor(product.available_colors[imageIndex]);
     }
   };
@@ -114,44 +132,51 @@ const ProductDetailPage = () => {
             <h1 className="product-info__name">{product.name}</h1>
             <p className="product-info__price">${product.price}</p>
 
-            <div className="product-info__selection-group">
-              <span className="product-info__label">
-                Color: {selectedColor}
-              </span>
-              <div className="product-info__colors">
-                {product.available_colors.map((color) => (
-                  <div
-                    key={color}
-                    className={`product-info__color-swatch ${
-                      selectedColor === color
-                        ? "product-info__color-swatch--active"
-                        : ""
-                    }`}
-                    style={{ background: colorMap[color] }}
-                    onClick={() => handleColorSelect(color)}
-                  />
-                ))}
-              </div>
-            </div>
+            {product.available_colors &&
+              product.available_colors.length > 0 && (
+                <div className="product-info__selection-group">
+                  <span className="product-info__label">
+                    Color: {selectedColor}
+                  </span>
+                  <div className="product-info__colors">
+                    {product.available_colors.map((color) => (
+                      <div
+                        key={color}
+                        className={`product-info__color-swatch ${
+                          selectedColor === color
+                            ? "product-info__color-swatch--active"
+                            : ""
+                        }`}
+                        style={{ background: colorMap[color] || color }}
+                        onClick={() => handleColorSelect(color)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
 
-            <div className="product-info__selection-group">
-              <span className="product-info__label">Size: {selectedSize}</span>
-              <div className="product-info__sizes">
-                {product.available_sizes.map((size) => (
-                  <button
-                    key={size}
-                    className={`product-info__size-button ${
-                      selectedSize === size
-                        ? "product-info__size-button--active"
-                        : ""
-                    }`}
-                    onClick={() => setSelectedSize(size)}
-                  >
-                    {size}
-                  </button>
-                ))}
+            {product.available_sizes && product.available_sizes.length > 0 && (
+              <div className="product-info__selection-group">
+                <span className="product-info__label">
+                  Size: {selectedSize}
+                </span>
+                <div className="product-info__sizes">
+                  {product.available_sizes.map((size) => (
+                    <button
+                      key={size}
+                      className={`product-info__size-button ${
+                        selectedSize === size
+                          ? "product-info__size-button--active"
+                          : ""
+                      }`}
+                      onClick={() => setSelectedSize(size)}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="product-info__selection-group">
               <span className="product-info__label">Quantity</span>

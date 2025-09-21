@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 const Input = ({
   id,
-  label,
+  label = "",
+  placeholder,
   type = "text",
   value,
   onChange,
@@ -29,15 +30,18 @@ const Input = ({
           className="form-group__input"
           value={value}
           onChange={onChange}
-          placeholder=" "
+          placeholder={label ? " " : placeholder}
           required={hasAsterisk}
         />
-        <label htmlFor={id} className="form-group__label">
-          {labelText}
-          {hasAsterisk && (
-            <span className="form-group__label-asterisk"> *</span>
-          )}
-        </label>
+
+        {label && (
+          <label htmlFor={id} className="form-group__label">
+            {labelText}
+            {hasAsterisk && (
+              <span className="form-group__label-asterisk"> *</span>
+            )}
+          </label>
+        )}
         {type === "password" && hasIcon && (
           <button
             type="button"

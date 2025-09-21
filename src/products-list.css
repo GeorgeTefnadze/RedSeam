@@ -145,3 +145,59 @@
   font-size: 16px;
   color: var(--color-text-primary);
 }
+
+.filter-dropdown,
+.sort-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  text-align: left;
+}
+
+.filter-dropdown__price-inputs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.sort-dropdown {
+  width: 223px;
+  padding: 8px;
+}
+
+.sort-dropdown__title {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  color: var(--color-text-primary);
+}
+
+.sort-dropdown__item {
+  padding: 10px 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: var(--color-text-primary);
+}
+
+.sort-dropdown__item:hover {
+  background-color: #f3f4f6;
+}
+
+.sort-dropdown__item--active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.control-button--active {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
