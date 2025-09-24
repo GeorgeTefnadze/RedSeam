@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import apiClient from "../api/axiosConfig";
+import { useCart } from "../contexts/CartContext";
 
 import Header from "../components/Header";
 import Button from "../components/Button";
@@ -40,6 +41,8 @@ const ProductDetailPage = () => {
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
+
+  const { addToCart, loading: cartLoading } = useCart();
 
   useEffect(() => {
     apiClient
@@ -90,6 +93,26 @@ const ProductDetailPage = () => {
     ) {
       setSelectedColor(product.available_colors[imageIndex]);
     }
+  };
+
+  const handleAddToCart = () => {
+    if (
+      product.available_sizes &&
+      product.available_sizes.length > 0 &&
+      !selectedSize
+    ) {
+      alert("Please select a size before adding to cart.");
+      return;
+    }
+
+    const productToAdd = {
+      id: product.id,
+      selectedColor,
+      selectedSize,
+      quantity,
+    };
+
+    addToCart(productToAdd);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -199,8 +222,13 @@ const ProductDetailPage = () => {
               </div>
             </div>
 
-            <Button variant="primary" className="product-info__add-to-cart">
-              Add to cart
+            <Button
+              variant="primary"
+              className="product-info__add-to-cart"
+              onClick={handleAddToCart}
+              disabled={cartLoading}
+            >
+              {cartLoading ? "Adding..." : "Add to cart"}
             </Button>
 
             <div className="product-info__details">

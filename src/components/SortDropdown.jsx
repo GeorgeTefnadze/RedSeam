@@ -1,6 +1,5 @@
 import React from "react";
 
-// Updated sort options to match the design
 const SORT_OPTIONS = [
   { value: "created_at", label: "New products first" },
   { value: "price", label: "Price, low to high" },
