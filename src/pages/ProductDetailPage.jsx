@@ -96,6 +96,11 @@ const ProductDetailPage = () => {
   };
 
   const handleAddToCart = () => {
+    if (!product.available_sizes) {
+      alert("Product is Sold out");
+      return;
+    }
+
     if (
       product.available_sizes &&
       product.available_sizes.length > 0 &&

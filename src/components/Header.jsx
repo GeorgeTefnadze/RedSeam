@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useCart } from "../contexts/CartContext"; // Import the useCart hook
+import { useCart } from "../contexts/CartContext"; 
 
 import HeaderLogo from "../assets/HeaderLogo.svg";
 import HeaderAvatar from "../assets/HeaderAvatar.svg";
@@ -10,13 +10,11 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Use the cart context to get the openCart function and cartCount
   const { openCart, cartCount } = useCart();
 
   const [user, setUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Determine the correct link for the logo
   const productsLink = location.pathname.startsWith("/products/page/")
     ? location.pathname
     : "/products";
@@ -51,10 +49,8 @@ const Header = () => {
           </Link>
         ) : (
           <div className="header__nav-controls">
-            {/* This is now a button that opens the cart sidebar */}
             <button onClick={openCart} className="header__nav-cart">
               <img src={CartIcon} alt="Shopping Cart" />
-              {/* Display the cart count if there are items */}
               {cartCount > 0 && (
                 <span className="header__cart-count">{cartCount}</span>
               )}

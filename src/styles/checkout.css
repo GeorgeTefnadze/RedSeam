@@ -1,0 +1,157 @@
+.checkout-page {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 40px 60px;
+}
+
+.checkout-page__title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
+
+.checkout-page__content {
+  max-height: 635px;
+  display: flex;
+  gap: 60px;
+  align-items: flex-start;
+}
+
+.checkout-page__main {
+  flex-grow: 1;
+}
+
+.checkout-form-container {
+  background-color: #f9fafb;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 1129px;
+  height: 635px;
+}
+
+.checkout-form-container__title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 32px;
+}
+
+.checkout-form {
+  width: 578px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.checkout-form__row {
+  display: flex;
+  gap: 24px;
+}
+
+.checkout-form__row .form-group {
+  flex: 1;
+}
+
+.checkout-page__summary {
+  width: 540px;
+  height: 635px;
+  flex-shrink: 0;
+}
+
+.checkout-summary-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.checkout-summary__items {
+  max-height: 400px;
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 16px;
+}
+
+.checkout-summary__items .cart-item:last-child {
+  border-bottom: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.success-modal {
+  width: 867px;
+  height: 590px;
+  background-color: var(--color-background);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+}
+
+.success-modal__close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+}
+
+.success-modal__close-btn svg {
+  width: 28px;
+  height: 28px;
+}
+
+.success-modal__icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background-color: #f0fdf4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.success-modal__icon svg {
+  width: 40px;
+  height: 40px;
+  color: #22c55e;
+}
+
+.success-modal__title {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+}
+
+.success-modal__text {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  margin-bottom: 48px;
+}
+
+.success-modal__button-wrapper {
+  width: 214px;
+}

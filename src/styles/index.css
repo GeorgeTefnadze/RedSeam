@@ -2,6 +2,7 @@
 @import url("./products-list.css");
 @import url("./products-detail.css");
 @import url("./cart.css");
+@import url("./checkout.css");
 
 :root {
   --color-primary: #ea580c;

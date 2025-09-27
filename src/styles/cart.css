@@ -47,6 +47,7 @@
   flex-grow: 1;
   overflow-y: auto;
   padding: 20px 0;
+  padding-right: 16px;
 }
 
 .cart-item {
@@ -91,16 +92,18 @@
 }
 
 .cart-item__quantity-controls {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 16px;
+  gap: 4px;
+  font-size: 12px;
   border: 1px solid var(--color-border);
   border-radius: 9999px;
   width: fit-content;
-  padding: 6px 10px;
+  padding: 4px 8px;
 }
 
 .cart-item__quantity-controls button {
+  all: unset;
   background: none;
   border: none;
   cursor: pointer;
@@ -117,6 +120,7 @@
 .cart-item__quantity-controls span {
   font-size: 16px;
   font-weight: 500;
+  display: inline-block;
 }
 
 .cart-item__actions {

@@ -1,9 +1,11 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 import Button from "./Button";
 import EmptyCartIcon from "../assets/EmptyCartIcon.svg";
 
 const CartSidebar = () => {
+  const navigate = useNavigate();
   const {
     isCartOpen,
     closeCart,
@@ -15,6 +17,11 @@ const CartSidebar = () => {
     total,
     loading,
   } = useCart();
+
+  function toCheckout() {
+    closeCart();
+    navigate("/checkout");
+  }
 
   if (!isCartOpen) {
     return null;
@@ -122,7 +129,10 @@ const CartSidebar = () => {
                   <span>${total.toFixed(2)}</span>
                 </div>
               </div>
-              <Button variant="primary">Checkout</Button>
+
+              <Button variant="primary" onClick={toCheckout}>
+                Checkout
+              </Button>
             </footer>
           </>
         )}
