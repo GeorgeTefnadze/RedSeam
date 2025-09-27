@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Input = ({
   id,
@@ -8,12 +8,19 @@ const Input = ({
   value,
   onChange,
   hasIcon = false,
+  errors,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
+  useEffect(() => {
+    console.log(id);
+
+    console.log(errors);
+  }, [errors]);
 
   const inputType = type === "password" && isPasswordVisible ? "text" : type;
 
@@ -31,11 +38,14 @@ const Input = ({
           value={value}
           onChange={onChange}
           placeholder={label ? " " : placeholder}
-          required={hasAsterisk}
         />
 
         {label && (
-          <label htmlFor={id} className="form-group__label">
+          <label
+            htmlFor={id}
+            className="form-group__label"
+            style={errors && errors[id] ? { color: "red" } : {}}
+          >
             {labelText}
             {hasAsterisk && (
               <span className="form-group__label-asterisk"> *</span>

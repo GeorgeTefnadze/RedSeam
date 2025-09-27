@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 import Header from "../components/Header";
 import Input from "../components/Input";
 import Button from "../components/Button";
 
-import defaultAvatar from "../assets/HeaderAvatar.svg";
+import UploadImage from "../assets/UploadImage.svg";
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
@@ -18,12 +19,13 @@ const RegistrationPage = () => {
     password: "",
     password_confirmation: "",
   });
-  const [avatarPreview, setAvatarPreview] = useState(defaultAvatar);
+  const [avatarPreview, setAvatarPreview] = useState(UploadImage);
   const [avatarFile, setAvatarFile] = useState(null);
+
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
 
     setFormData((prevState) => ({
       ...prevState,
@@ -34,6 +36,11 @@ const RegistrationPage = () => {
   const handleAvatarUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    if (file.size > 1024 * 1024) {
+      toast.error("Image must be less than 1MB");
+      return;
+    }
 
     setAvatarFile(file);
     setAvatarPreview(URL.createObjectURL(file));
@@ -47,39 +54,86 @@ const RegistrationPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const fd = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      fd.append(key, value);
-    });
+    const errors = validateForm(formData);
 
-    if (avatarFile) {
-      fd.append("avatar", avatarFile);
-    }
+    if (!errors) {
+      toast.success("Form is valid, submitting...");
 
-    console.log([...fd.entries()]);
-
-    apiClient
-      .post(`/register`, fd, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-
-        const { token, user } = response.data;
-
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-
-        navigate("/products");
-      })
-      .catch((err) => {
-        console.error("Register failed:", err);
-        setError("Invalid email or password. Please try again.");
+      const fd = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        fd.append(key, value);
       });
 
-    console.log("Form submitted with:", { ...formData, avatar: avatarFile });
+      if (avatarFile) {
+        fd.append("avatar", avatarFile);
+      }
+
+      console.log([...fd.entries()]);
+      console.log("Form submitted with:", { ...formData, avatar: avatarFile });
+
+      apiClient
+        .post(`/register`, fd, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log(response.data);
+
+          const { token, user } = response.data;
+
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user));
+
+          navigate("/products");
+        })
+        .catch((err) => {
+          console.error("Register failed:", err);
+        });
+    } else {
+      Object.values(errors).forEach((msg, i) => {
+        setTimeout(() => toast.error(msg), i * 200);
+      });
+      setErrors(errors);
+      setTimeout(() => {
+        setErrors({});
+      }, 2000);
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+
+    if (!formData.username.trim()) {
+      errors.username = "Username is required";
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        errors.email = "Invalid email format";
+      }
+    }
+
+    if (!formData.password.trim()) {
+      errors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+    }
+
+    if (!formData.password_confirmation.trim()) {
+      errors.password_confirmation = "Please confirm your password";
+    } else if (formData.password !== formData.password_confirmation) {
+      errors.password_confirmation = "Passwords do not match";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return errors;
+    }
+
+    return null;
   };
 
   return (
@@ -92,11 +146,24 @@ const RegistrationPage = () => {
             <h1 className="auth-form__title">Registration</h1>
 
             <div className="auth-form__avatar-control">
-              <img
-                src={avatarPreview}
-                alt="Avatar Preview"
-                className="auth-form__avatar-image"
-              />
+              <label
+                htmlFor="avatar-upload"
+                className="auth-form__avatar-label"
+              >
+                {avatarFile !== null ? (
+                  <img
+                    src={avatarPreview}
+                    alt="Avatar Preview"
+                    className="auth-form__avatar-image"
+                  />
+                ) : (
+                  <img
+                    src={UploadImage}
+                    alt="Avatar Preview"
+                    className="auth-form__avatar-preview"
+                  />
+                )}
+              </label>
               <div className="auth-form__avatar-actions">
                 <label
                   htmlFor="avatar-upload"
@@ -111,13 +178,15 @@ const RegistrationPage = () => {
                   onChange={handleAvatarUpload}
                   style={{ display: "none" }}
                 />
-                <button
-                  type="button"
-                  onClick={removeAvatar}
-                  className="action-button action-button--remove"
-                >
-                  Remove
-                </button>
+                {avatarFile !== null ? (
+                  <button
+                    type="button"
+                    onClick={removeAvatar}
+                    className="action-button action-button--remove"
+                  >
+                    Remove
+                  </button>
+                ) : null}
               </div>
             </div>
 
@@ -126,6 +195,7 @@ const RegistrationPage = () => {
               label="Username *"
               value={formData.username}
               onChange={handleChange}
+              errors={errors}
             />
             <Input
               id="email"
@@ -133,6 +203,7 @@ const RegistrationPage = () => {
               type="email"
               value={formData.email}
               onChange={handleChange}
+              errors={errors}
             />
             <Input
               id="password"
@@ -141,6 +212,7 @@ const RegistrationPage = () => {
               value={formData.password}
               onChange={handleChange}
               hasIcon={true}
+              errors={errors}
             />
             <Input
               id="password_confirmation"
@@ -150,6 +222,7 @@ const RegistrationPage = () => {
               value={formData.password_confirmation}
               onChange={handleChange}
               hasIcon={true}
+              errors={errors}
             />
             <Button type="submit" variant="primary">
               Register
@@ -160,6 +233,7 @@ const RegistrationPage = () => {
           </form>
         </div>
       </main>
+      <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };
