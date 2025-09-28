@@ -25,10 +25,12 @@ const CheckoutPage = () => {
     fetchCart,
   } = useCart();
 
+  const storedUser = localStorage.getItem("user");
+
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
-    email: "",
+    email: JSON.parse(storedUser).email,
     address: "",
     zip_code: "",
   });
@@ -38,6 +40,8 @@ const CheckoutPage = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
+    console.log(localStorage.getItem("user"));
+
     if (cartItems.length === 0) {
       navigate("/products");
     }

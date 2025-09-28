@@ -60,6 +60,7 @@ const LoginPage = () => {
         .catch((err) => {
           if (err.status === 401) {
             toast.error("Incorrect Email Or Password");
+            toast.dismiss(loginLoading);
           } else {
             console.error("Login failed:", err);
           }
@@ -80,10 +81,17 @@ const LoginPage = () => {
 
     if (!formData.email.trim()) {
       newErrors.email = "Email is Required";
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = "Invalid email format";
+      }
     }
 
     if (!formData.password.trim()) {
       newErrors.password = "Password is Required";
+    } else if (formData.password.length < 3) {
+      newErrors.password = "Password must be at least 3 characters";
     }
 
     if (Object.keys(newErrors).length > 0) {

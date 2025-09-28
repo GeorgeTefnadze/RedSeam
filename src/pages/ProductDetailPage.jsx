@@ -10,7 +10,7 @@ import Button from "../components/Button";
 const colorMap = {
   White: "#FFFFFF",
   Red: "#FF0000",
-  Multi: "linear-gradient(90deg, red, yellow, green, blue)",
+  Multi: "linear-gradient(45deg, red, red, green, green, blue, blue)",
   Blue: "#0000FF",
   "Navy Blue": "#001F54",
   Grey: "#808080",

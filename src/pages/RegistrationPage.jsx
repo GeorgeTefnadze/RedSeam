@@ -57,7 +57,7 @@ const RegistrationPage = () => {
     const errors = validateForm(formData);
 
     if (!errors) {
-      toast.success("Form is valid, submitting...");
+      const registerLoader = toast.loading("Form is valid, submitting...");
 
       const fd = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
@@ -78,17 +78,21 @@ const RegistrationPage = () => {
           },
         })
         .then((response) => {
-          console.log(response.data);
-
           const { token, user } = response.data;
 
           localStorage.setItem("token", token);
           localStorage.setItem("user", JSON.stringify(user));
-
+          toast.success("Successfully Registered");
+          toast.dismiss(registerLoader);
           navigate("/products");
         })
         .catch((err) => {
           console.error("Register failed:", err);
+          toast.dismiss(registerLoader);
+
+          Object.values(err.response.data.errors).forEach((msg, i) => {
+            setTimeout(() => toast.error(msg), i * 200);
+          });
         });
     } else {
       Object.values(errors).forEach((msg, i) => {
@@ -119,8 +123,8 @@ const RegistrationPage = () => {
 
     if (!formData.password.trim()) {
       errors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      errors.password = "Password must be at least 6 characters";
+    } else if (formData.password.length < 3) {
+      errors.password = "Password must be at least 3 characters";
     }
 
     if (!formData.password_confirmation.trim()) {
