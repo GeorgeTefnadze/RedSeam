@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./Routes/ProtectedRoute";
 
 import { CartProvider } from "./contexts/CartContext";
 import CartSidebar from "./components/CartSidebar";
+import { Toaster } from "react-hot-toast";
 
 import LoginPage from "./pages/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage";
@@ -16,22 +18,57 @@ function App() {
         <CartSidebar />
 
         <Routes>
+          {/* unprotected routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegistrationPage />} />
 
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/products/page/:pageNumber" element={<ProductsPage />} />
-
+          {/* protected routes */}
+          <Route
+            path="/products"
+            element={
+              <ProtectedRoute>
+                <ProductsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/products/page/:pageNumber"
+            element={
+              <ProtectedRoute>
+                <ProductsPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/productdetail/:productId"
-            element={<ProductDetailPage />}
+            element={
+              <ProtectedRoute>
+                <ProductDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <CheckoutPage />
+              </ProtectedRoute>
+            }
           />
 
-          <Route path="/checkout" element={<CheckoutPage />} />
-
+          {/* default route */}
           <Route path="/" element={<LoginPage />} />
         </Routes>
       </BrowserRouter>
+      <Toaster
+        position="bottom-center"
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            pointerEvents: "none",
+          },
+        }}
+      />
     </CartProvider>
   );
 }

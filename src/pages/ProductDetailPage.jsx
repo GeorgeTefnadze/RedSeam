@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import apiClient from "../api/axiosConfig";
 import { useCart } from "../contexts/CartContext";
+import { Toaster, toast } from "react-hot-toast";
 
 import Header from "../components/Header";
 import Button from "../components/Button";
@@ -49,6 +50,8 @@ const ProductDetailPage = () => {
       .get(`/products/${productId}`)
       .then((response) => {
         const productData = response.data;
+        console.log(productData);
+
         setProduct(productData);
         setSelectedImage(productData.cover_image);
 
@@ -97,7 +100,7 @@ const ProductDetailPage = () => {
 
   const handleAddToCart = () => {
     if (!product.available_sizes) {
-      alert("Product is Sold out");
+      toast.error("Product is Sold out");
       return;
     }
 
@@ -106,7 +109,7 @@ const ProductDetailPage = () => {
       product.available_sizes.length > 0 &&
       !selectedSize
     ) {
-      alert("Please select a size before adding to cart.");
+      toast.error("Please select a size before adding to cart.");
       return;
     }
 
@@ -237,11 +240,16 @@ const ProductDetailPage = () => {
             </Button>
 
             <div className="product-info__details">
-              <h2 className="product-info__label">Details</h2>
+              <div className="product-info__details-brand">
+                <h2 className="product-info__label">Details</h2>
+                <img src={product.brand.image} alt="" />
+              </div>
+              <p>Brand: {product.brand.name}</p>
               <p>{product.description}</p>
             </div>
           </section>
         </div>
+        <Toaster position="bottom-center" reverseOrder={false} />
       </div>
     </>
   );

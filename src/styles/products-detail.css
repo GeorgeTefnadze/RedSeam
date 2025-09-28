@@ -88,7 +88,6 @@
   display: block;
   font-size: 16px;
   font-weight: 600;
-  margin-bottom: 12px;
 }
 
 .product-info__colors {
@@ -172,4 +171,17 @@
   margin-top: 60px;
   border-top: 1px solid var(--color-border);
   padding-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.product-info__details-brand {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-info__details-brand img {
+  width: 109px;
 }

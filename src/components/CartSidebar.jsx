@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 import Button from "./Button";
 import EmptyCartIcon from "../assets/EmptyCartIcon.svg";
+import toast, { Toaster } from "react-hot-toast";
 
 const CartSidebar = () => {
   const navigate = useNavigate();
@@ -50,8 +51,6 @@ const CartSidebar = () => {
             </svg>
           </button>
         </header>
-
-        {loading && <div className="cart-sidebar__loader">Updating...</div>}
 
         {cartItems.length === 0 && !loading ? (
           <div className="cart-sidebar__empty">
@@ -136,6 +135,7 @@ const CartSidebar = () => {
             </footer>
           </>
         )}
+        <Toaster position="bottom-center" reverseOrder={false} />
       </aside>
     </>
   );

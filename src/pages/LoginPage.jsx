@@ -39,6 +39,8 @@ const LoginPage = () => {
     const errors = validateForm();
 
     if (!errors) {
+      const loginLoading = toast.loading("Logging In");
+
       apiClient
         .post(`/login`, formData)
         .then((response) => {
@@ -46,6 +48,8 @@ const LoginPage = () => {
 
           localStorage.setItem("token", token);
           localStorage.setItem("user", JSON.stringify(user));
+
+          toast.dismiss(loginLoading);
 
           navigate("/products");
         })
@@ -119,7 +123,6 @@ const LoginPage = () => {
           </form>
         </div>
       </main>
-      <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };

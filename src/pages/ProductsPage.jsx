@@ -7,6 +7,7 @@ import ProductCard from "../components/ProductCard";
 import FilterDropdown from "../components/FilterDropdown";
 import SortDropdown from "../components/SortDropdown";
 import Pagination from "../components/Pagination";
+import { toast, Toaster } from "react-hot-toast";
 
 const ProductsPage = () => {
   const { pageNumber } = useParams();
@@ -68,10 +69,14 @@ const ProductsPage = () => {
   const handleApplyFilter = (priceRange) => {
     setActiveFilters(priceRange);
     setIsFilterOpen(false);
+    toast.success(
+      `Filter From ${priceRange.minPrice} - To ${priceRange.maxPrice} Applied`
+    );
     if (currentPage !== 1) navigate("/products/page/1");
   };
 
   const handleSelectSort = (sortOption) => {
+    toast.success("Sorting Updated");
     setActiveSort((prevSort) => (prevSort === sortOption ? "" : sortOption));
     setIsSortOpen(false);
     if (currentPage !== 1) navigate("/products/page/1");
@@ -93,6 +98,7 @@ const ProductsPage = () => {
   const handleFilterButtonClick = () => {
     if (isFilterActive) {
       setActiveFilters({ minPrice: "", maxPrice: "" });
+      toast.success("Filters Cleared");
     } else {
       setIsFilterOpen(!isFilterOpen);
       setIsSortOpen(false);

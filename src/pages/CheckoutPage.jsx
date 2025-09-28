@@ -228,7 +228,6 @@ const CheckoutPage = () => {
             </div>
           </aside>
         </div>
-        <Toaster position="bottom-center" reverseOrder={false} />
         <SuccessModal isOpen={checkoutStatus} onClose={continueShopping} />
       </div>
     </>

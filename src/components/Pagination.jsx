@@ -73,10 +73,10 @@ const Pagination = ({ paginationData, onPageChange }) => {
             disabled={!link.url}
             onClick={() => link.url && onPageChange(link.url)}
             className={`
-                            pagination-button 
-                            ${link.active ? "pagination-button--active" : ""}
-                            ${!link.url ? "pagination-button--disabled" : ""}
-                        `}
+              pagination-button 
+              ${link.active ? "pagination-button--active" : ""}
+              ${!link.url ? "pagination-button--disabled" : ""}
+            `}
           >
             {isPrev ? "‹" : isNext ? "›" : label}
           </button>

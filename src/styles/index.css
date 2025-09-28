@@ -138,7 +138,12 @@ body {
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
+  user-select: none;
   transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .pagination-button:hover:not(.pagination-button--active) {

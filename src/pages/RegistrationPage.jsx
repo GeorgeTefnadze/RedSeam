@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import apiClient from "../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
@@ -227,13 +227,12 @@ const RegistrationPage = () => {
             <Button type="submit" variant="primary">
               Register
             </Button>
-            <Link to={"/"} className="auth-form__footer">
+            <Link to={"/login"} className="auth-form__footer">
               Already member? <span>Log in</span>
             </Link>
           </form>
         </div>
       </main>
-      <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };

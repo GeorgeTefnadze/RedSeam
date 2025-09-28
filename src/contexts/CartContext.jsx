@@ -1,5 +1,12 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 import apiClient from "../api/axiosConfig";
+import { Toaster, toast } from "react-hot-toast";
 
 const CartContext = createContext();
 
@@ -10,21 +17,37 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const loadingToastId = useRef(null);
+
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
+  const changeLoadingStatus = (status) => {
+    setLoading(status);
+
+    if (status) {
+      if (!loadingToastId.current) {
+        loadingToastId.current = toast.loading("Updating Cart");
+      }
+    } else {
+      if (loadingToastId.current) {
+        toast.dismiss(loadingToastId.current);
+        loadingToastId.current = null;
+      }
+    }
+  };
+
   const fetchCart = async () => {
-    setLoading(true);
+    changeLoadingStatus(true);
     try {
       const response = await apiClient.get("/cart");
-      console.log(response);
 
       setCartItems(response.data || []);
     } catch (error) {
       console.error("Failed to fetch cart:", error);
       setCartItems([]);
     } finally {
-      setLoading(false);
+      changeLoadingStatus(false);
     }
   };
 
@@ -35,7 +58,7 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   const addToCart = async (productToAdd) => {
-    setLoading(true);
+    changeLoadingStatus(true);
     try {
       const payload = {
         color: productToAdd.selectedColor,
@@ -48,12 +71,12 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error("Failed to add to cart:", error);
     } finally {
-      setLoading(false);
+      changeLoadingStatus(false);
     }
   };
 
   const removeFromCart = async (productToRemove) => {
-    setLoading(true);
+    changeLoadingStatus(true);
     try {
       const payload = {
         color: productToRemove.color,
@@ -66,7 +89,7 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error("Failed to remove from cart:", error);
     } finally {
-      setLoading(false);
+      changeLoadingStatus(false);
     }
   };
 
@@ -74,7 +97,7 @@ export const CartProvider = ({ children }) => {
     if (newQuantity < 1) {
       return;
     }
-    setLoading(true);
+    changeLoadingStatus(true);
     try {
       const payload = {
         color: productToUpdate.color,
@@ -87,7 +110,7 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error("Failed to update quantity:", error);
     } finally {
-      setLoading(false);
+      changeLoadingStatus(false);
     }
   };
 
@@ -116,5 +139,12 @@ export const CartProvider = ({ children }) => {
     loading,
   };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>
+      <>
+        {children}
+        <Toaster position="bottom-center" reverseOrder={false} />
+      </>
+    </CartContext.Provider>
+  );
 };
