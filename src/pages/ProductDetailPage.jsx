@@ -50,8 +50,6 @@ const ProductDetailPage = () => {
       .get(`/products/${productId}`)
       .then((response) => {
         const productData = response.data;
-        console.log(productData);
-
         setProduct(productData);
         setSelectedImage(productData.cover_image);
 
@@ -84,6 +82,11 @@ const ProductDetailPage = () => {
     if (colorIndex !== -1 && product.images[colorIndex]) {
       setSelectedImage(product.images[colorIndex]);
     }
+  };
+
+  const handleSizeSelect = (size) => {
+    setSelectedSize(size);
+    setQuantity(1);
   };
 
   const handleImageSelect = (image) => {
@@ -200,7 +203,7 @@ const ProductDetailPage = () => {
                           ? "product-info__size-button--active"
                           : ""
                       }`}
-                      onClick={() => setSelectedSize(size)}
+                      onClick={() => handleSizeSelect(size)}
                     >
                       {size}
                     </button>

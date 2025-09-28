@@ -46,6 +46,7 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error("Failed to fetch cart:", error);
       setCartItems([]);
+      toast.error("Failed to fetch cart");
     } finally {
       changeLoadingStatus(false);
     }
@@ -70,6 +71,7 @@ export const CartProvider = ({ children }) => {
       openCart();
     } catch (error) {
       console.error("Failed to add to cart:", error);
+      toast.error("Failed to add to cart");
     } finally {
       changeLoadingStatus(false);
     }
@@ -88,6 +90,7 @@ export const CartProvider = ({ children }) => {
       await fetchCart();
     } catch (error) {
       console.error("Failed to remove from cart:", error);
+      toast.error("Failed to remove from cart");
     } finally {
       changeLoadingStatus(false);
     }
@@ -109,6 +112,7 @@ export const CartProvider = ({ children }) => {
       await fetchCart();
     } catch (error) {
       console.error("Failed to update quantity:", error);
+      toast.error("Failed to update quantity");
     } finally {
       changeLoadingStatus(false);
     }

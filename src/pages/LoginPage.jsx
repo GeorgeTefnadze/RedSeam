@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import apiClient from "../api/axiosConfig";
 import { toast, Toaster } from "react-hot-toast";
+import { useCart } from "../contexts/CartContext.jsx";
 
 import Header from "../components/Header";
 import Input from "../components/Input";
@@ -11,6 +12,8 @@ import Button from "../components/Button";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+
+  const { fetchCart } = useCart();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -51,6 +54,7 @@ const LoginPage = () => {
 
           toast.dismiss(loginLoading);
 
+          fetchCart();
           navigate("/products");
         })
         .catch((err) => {

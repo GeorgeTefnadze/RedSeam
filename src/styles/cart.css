@@ -94,7 +94,7 @@
 .cart-item__quantity-controls {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   font-size: 12px;
   border: 1px solid var(--color-border);
   border-radius: 9999px;
