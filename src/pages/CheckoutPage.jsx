@@ -35,6 +35,8 @@ const CheckoutPage = () => {
 
   const [checkoutStatus, setCheckoutStatus] = useState(false);
 
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
     if (cartItems.length === 0) {
       navigate("/products");
@@ -49,51 +51,54 @@ const CheckoutPage = () => {
   const handlePay = (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    const errors = validateForm(formData);
 
-    console.log(formData);
-    apiClient
-      .post("/cart/checkout", formData)
-      .then((response) => {
-        setCheckoutStatus(true);
-      })
-      .catch((err) => {
-        console.error("Checkout failed : " + err);
-        toast.error("Checkout Failed");
+    if (!errors) {
+      apiClient
+        .post("/cart/checkout", formData)
+        .then((response) => {
+          setCheckoutStatus(true);
+        })
+        .catch((err) => {
+          console.error("Checkout failed : " + err);
+          toast.error("Checkout Failed");
+        });
+    } else {
+      Object.values(errors).forEach((msg, i) => {
+        setTimeout(() => toast.error(msg), i * 200);
       });
+      setErrors(errors);
+      setTimeout(() => {
+        setErrors({});
+      }, 2000);
+    }
   };
 
   const validateForm = () => {
-    const errors = [];
+    const errors = {};
 
-    if (!formData.name.trim()) errors.push("Name is required");
-    if (!formData.surname.trim()) errors.push("Surname is required");
+    if (!formData.name.trim()) errors.name = "Name is required";
+    if (!formData.surname.trim()) errors.surname = "Surname is required";
     if (!formData.email.trim()) {
-      errors.push("Email is required");
+      errors.email = "Email is required";
     } else {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) errors.push("Invalid email");
+      if (!emailRegex.test(formData.email)) errors.email = "Invalid email";
     }
-    if (!formData.address.trim()) errors.push("Address is required");
+    if (!formData.address.trim()) errors.address = "Address is required";
     if (!formData.zip_code.trim()) {
-      errors.push("ZIP code is required");
+      errors.zip_code = "ZIP code is required";
     } else {
       const zipRegex = /^\d{4,10}$/;
-      if (!zipRegex.test(formData.zip_code)) errors.push("Invalid ZIP code");
+      if (!zipRegex.test(formData.zip_code))
+        errors.zip_code("Invalid ZIP code");
     }
 
-    if (errors.length > 0) {
-      errors.forEach((el, i) => {
-        setTimeout(() => {
-          toast.error(el);
-        }, i * 200);
-      });
-      return false;
+    if (Object.keys(errors).length > 0) {
+      return errors;
     }
 
-    return true;
+    return null;
   };
 
   const continueShopping = () => {
@@ -117,12 +122,14 @@ const CheckoutPage = () => {
                     label="Name *"
                     value={formData.name}
                     onChange={handleChange}
+                    errors={errors}
                   />
                   <Input
                     id="surname"
                     label="Surname *"
                     value={formData.surname}
                     onChange={handleChange}
+                    errors={errors}
                   />
                 </div>
                 <Input
@@ -131,6 +138,7 @@ const CheckoutPage = () => {
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
+                  errors={errors}
                 />
                 <div className="checkout-form__row">
                   <Input
@@ -138,12 +146,14 @@ const CheckoutPage = () => {
                     label="Address *"
                     value={formData.address}
                     onChange={handleChange}
+                    errors={errors}
                   />
                   <Input
                     id="zip_code"
                     label="Zip code *"
                     value={formData.zip_code}
                     onChange={handleChange}
+                    errors={errors}
                   />
                 </div>
               </form>
