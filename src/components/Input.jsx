@@ -16,12 +16,6 @@ const Input = ({
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  useEffect(() => {
-    console.log(id);
-
-    console.log(errors);
-  }, [errors]);
-
   const inputType = type === "password" && isPasswordVisible ? "text" : type;
 
   const hasAsterisk = label.includes("*");

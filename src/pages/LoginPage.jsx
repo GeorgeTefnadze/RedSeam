@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import apiClient from "../api/axiosConfig";
+import { toast, Toaster } from "react-hot-toast";
 
 import Header from "../components/Header";
 import Input from "../components/Input";
@@ -16,7 +17,7 @@ const LoginPage = () => {
     password: "",
   });
 
-  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (localStorage.getItem("user") !== null) {
@@ -34,24 +35,54 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError(null);
 
-    apiClient
-      .post(`/login`, formData)
-      .then((response) => {
-        console.log(response.data);
+    const errors = validateForm();
 
-        const { token, user } = response.data;
+    if (!errors) {
+      apiClient
+        .post(`/login`, formData)
+        .then((response) => {
+          const { token, user } = response.data;
 
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user));
 
-        navigate("/products");
-      })
-      .catch((err) => {
-        console.error("Login failed:", err);
-        setError("Invalid email or password. Please try again.");
+          navigate("/products");
+        })
+        .catch((err) => {
+          if (err.status === 401) {
+            toast.error("Incorrect Email Or Password");
+          } else {
+            console.error("Login failed:", err);
+          }
+        });
+    } else {
+      Object.values(errors).forEach((msg, i) => {
+        setTimeout(() => toast.error(msg), i * 200);
       });
+      setErrors(errors);
+      setTimeout(() => {
+        setErrors({});
+      }, 2000);
+    }
+  };
+
+  const validateForm = () => {
+    let newErrors = {};
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is Required";
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is Required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      return newErrors;
+    }
+
+    return null;
   };
 
   return (
@@ -68,6 +99,7 @@ const LoginPage = () => {
               type="email"
               value={formData.email}
               onChange={handleChange}
+              errors={errors}
             />
             <Input
               id="password"
@@ -76,6 +108,7 @@ const LoginPage = () => {
               value={formData.password}
               onChange={handleChange}
               hasIcon={true}
+              errors={errors}
             />
             <Button type="submit" variant="primary">
               Log in
@@ -86,6 +119,7 @@ const LoginPage = () => {
           </form>
         </div>
       </main>
+      <Toaster position="bottom-center" reverseOrder={false} />
     </div>
   );
 };

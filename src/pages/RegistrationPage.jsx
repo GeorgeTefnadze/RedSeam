@@ -48,7 +48,7 @@ const RegistrationPage = () => {
 
   const removeAvatar = () => {
     setAvatarFile(null);
-    setAvatarPreview(defaultAvatar);
+    setAvatarPreview(null);
   };
 
   const handleSubmit = (e) => {
